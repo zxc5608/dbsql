@@ -176,17 +176,21 @@ CASE
             
        END CONTACT
 FROM emp;
+SELECT userid, usernm, reg_dt
+
+
 
 
 SELECT userid, usernm, reg_dt, 
 CASE
-    WHEN MOD(TO_CHAR(reg_dt,'yyyy'),2)= MOD(TO_CHAR(reg_dt,'yyyy'),2)
+    WHEN MOD(TO_CHAR(reg_dt,'yyyy'),2)= MOD(TO_CHAR(SYSDATE,'yyyy'),2)
+   
     THEN '건강검진 대상자'
     ELSE '건강검진 대상자'
-    END CONTECT,
-    
+    END CONTECT
+    FROM users;
 DECODE(MOD(TO_CHAR(reg_dt,'yyyy'),2),
-                MOD(TO_CHAR(reg_dt,'yyyy'),2),'건강검진대상자',
+                MOD(TO_CHAR(SYSDATE,'yyyy'),2),'건강검진대상자',
                 '건강검진 비대상자') CONTACT
                 
 FROM users;
@@ -195,3 +199,4 @@ FROM users;
 SELECT *
 FROM emp
 ORDER BY 
+

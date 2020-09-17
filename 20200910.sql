@@ -1,3 +1,5 @@
+
+
 많이 쓰이는 함수 ,잘 알아두자
 (개념적으로 혼돈하지 말고 잘 정리하자 -SELECT절에 올수있는 컬럼에 대해 잘 정리
 
@@ -31,14 +33,15 @@ GROUP BY deptno;
 --전체행을 대상으로 그루핑할경우 GROUPBY절을 기술하지 않는다.
 SELECT MAX(sal)
 FROM emp;           
+
+
 전체직원중에 가장 큰급여를 알수는 있지만 해당 급여를 받는 사람이 누군지는 
 그룹합수만 이용해서는 구분할수없다
 emp 테이블 가장 큰 급여를 받는 사람의 값이 5000인 것은 알지만 해당사원이 누구인지는
 그룹함수만 사용해서는 누군지 식별할수 없다.
 ==>추후 진행
 
-SELECT MAX(sal)
-FROM emp;           
+           
 
 COUNT 함수 * 인자
 *: 행의 개수를 반환
@@ -50,13 +53,16 @@ FROM emp;
 그룹함수의 특징 : null값을 무시
 NULL연산의 특징 : 결과가 항상 NULL이다
 
-SELECT SUM(comm)  -- 널값을 무시
+SELECT SUM(comm)  -- 널값을 무시 하고 다 더해준다
 FROM emp
-
+      --널값이 옆에있으면 안세줌     --널값이 상관을안하고 셈
 SELECT SUM(sal+comm),SUM(sal)+SUM(comm)
 FROM emp;
 
-그룹함수의 특징2 :그룹화와 관련없는 상수들은 SELECT절에 기술할수ㅇ 있다
+SELECT *
+FROM emp;
+
+그룹함수의 특징2 :그룹화와 관련없는 상수들은 SELECT절에 기술할수있다
 SELECT deptno, SYSDATE,'TEST',1 , COUNT(*)
 FROM emp
 GROUP BY deptno;
@@ -72,7 +78,7 @@ ex: SELECT *
     그룹함수는 WHERE절에 사용불가
     SELECT deptno, COUNT(*)
     FROM emp
-    WHERE COUNT(*)>=5
+    WHERE  COUNT(*)>=5
     GROUP BY deptno;
     
     그룹함수에 대한 행 제한은 HAVING절에 기술
@@ -100,7 +106,7 @@ SELECT MAX(sal)MAX_SAL,
        COUNT(*)COUNT_ALL
 FROM emp;
 
-SELECT deptno
+SELECT deptno,
        MAX(sal)MAX_SAL,
        MIN(sal)MIN_SAL,
        ROUND(AVG(sal),2)AVG_SAL,
@@ -186,17 +192,18 @@ NATURAL JOIN:조인하고자하는 테이블의 컬럼명이 같은컬럼끼리 
     SELECT *
     FROM dept;
 
-NATURAL JOINf을 ORACLE 문법으로
-1 FROm절에 조인할 테이블을 나열한다
-2.WHERE절에 테이블 조인 조건을 기술한다.
+NATURAL JOIN을 ORACLE 문법으로
+1 FROM 절에 조인할 테이블을 나열한다
+2.WHERE 절에 테이블 조인 조건을 기술한다.
 
 SELECT *
 FROM emp, dept
 WHERE emp.deptno= dept.deptno;
 
 컬럼이 여러개 테이블에 동시에존재하는 상황에서 테이블 한정자를 붙이지 않아서
-오라클 입장에서는 해당 컬럼이 어떤 테이블의 컬럼인지 알수가 없을떄 발생.
+오라클 입장에서는 해당 컬럼이 어떤 테이블의 컬럼인지 알수가 없을때 발생.
 deptno컬럼은,emp,dept테이블 양쪽 모두에 존재한다
+
 SELECT *
 FROM emp, dept
 WHERE deptno= deptno;
@@ -230,14 +237,16 @@ ANSI-SQL JOIN WIth USING
     SELECT *
     FROM emp JOIN dept ON(emp.deptno=dept.deptno) -------------------
     WHERE emp.deptno IN(20,30)
-    ORACLE
     
+    
+    ORACLE
     SELECT *
     FROM emp,dept
     WHERE emp.deptno=dept.deptno
     AND emp.deptno IN (20, 30);
     
     논리적인형태에 따른 조인구분
+
 1. SELF JOIN :조인하는 테이블이 서로같은경우
     
     
@@ -249,7 +258,7 @@ SELECT e.empno, e.ename, e.mgr , m.ename
 FROM emp e, emp m
 WHERE e.mgr=m.empno;
 
-KING의 경우mgr 컬럼의 값이 null이기때문에WHERE e.mgr=m.empno; 조건을 충족시키지 못함
+KING의 경우mgr 컬럼의 값이 null이기때문에WHERE e.mgr = m.empno; 조건을 충족시키지 못함
 그래서 조인 실패해서 14건중 13건의 데이터만 조회
 
 2.NONEQUI JOIN :조인 조건이 =이 아닌 조인
@@ -266,12 +275,101 @@ empno, ename, sal, 등급(grade)
 SELECT empno, ename, sal, grade
 FROM emp,salgrade
 WHERE sal BETWEEN salgrade.losal AND salgrade.hisal;
-
 salgrade.losal<= emp.sal
 AND salgrade. hisal >= emp.sal;
 
 위를 ANSI로 변경
 SELECT empno, ename, sal, grade
 FROM emp JOIN salgrade  
-ON(salgrade.losal<= emp.sal AND salgrade. hisal >= emp.sal;)
+ON(salgrade.losal<= emp.sal AND salgrade. hisal >= emp.sal);
 
+실습 JOIN 0
+SELECT emp.empno,emp.ename,dept.deptno,dept.dname
+FROM emp,dept
+WHERE emp.deptno=dept.deptno
+ORDER BY deptno;
+
+JOIN
+SELECT emp.empno, emp.ename, dept.deptno, dept.dname
+FROM emp JOIN dept 
+ON emp.deptno=dept.deptno
+ORDER BY deptno;
+
+
+실습 JOIN 1
+SELECT emp.empno, emp.ename, emp.deptno, dept.dname
+FROM emp, dept
+WHERE emp.deptno= dept.deptno
+AND emp.deptno IN(10,30);
+
+join
+SELECT emp.empno, emp.ename, emp.deptno, dept.dname
+FROM emp JOIN dept
+on emp.deptno= dept.deptno
+AND emp.deptno IN(10,30);
+
+
+실습 JOIN2
+SELECT emp.empno, emp.ename, emp.sal, dept.deptno, dept.dname
+FROM emp, dept
+WHERE emp.deptno = dept.deptno  
+AND sal>2500
+ORDER BY deptno;
+
+SELECT emp.empno, emp.ename, emp.sal, dept.deptno, dept.dname
+FROM emp JOIN dept
+ON emp.deptno = dept.deptno  
+AND sal>2500
+ORDER BY deptno;
+
+실습 JOIN 3
+SELECT emp.empno, emp.ename ,emp.sal ,dept.deptno, dept.dname
+FROM emp, dept
+WHERE emp.deptno=dept.deptno
+AND sal>2500
+AND empno>7600;
+
+JOIN
+SELECT emp.empno, emp.ename ,emp.sal ,dept.deptno, dept.dname
+FROM emp JOIN dept
+ON emp.deptno=dept.deptno
+AND sal>2500
+AND empno>7600;
+
+
+실습 JOIN4
+SELECT emp.empno, emp.ename, emp.sal ,dept.deptno, dept.dname
+FROM emp, dept
+WHERE emp.deptno = dept.deptno
+AND sal>2500
+AND empno>7600
+AND dname='RESEARCH';
+
+JOIN
+SELECT emp.empno, emp.ename, emp.sal ,dept.deptno, dept.dname
+FROM emp JOIN dept
+ON emp.deptno = dept.deptno
+AND sal>2500
+AND empno>7600
+AND dname='RESEARCH';
+
+
+
+
+
+함수
+ . 그룹함수 (MIN, MAX, SUM, AVG, COUNT)
+
+JOIN
+ . 조인 문법
+   NATURAL JOIN
+   JOIN WITH USING
+   JOIN WITH ON
+   ORACLE JOIN
+
+ . 논리적 형태의 조인 구분
+   SELF JOIN
+   NONEQUI JOIN
+
+실습
+ . grp1~4

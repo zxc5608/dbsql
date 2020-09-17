@@ -41,7 +41,14 @@ ANSI
 변환 위
 
 
-5번문제변환
+실습5번
+SELECT p.pid, p.pnm, 1 cid, NVL(t.cnm,'brown')cnm, NVL(c.day,0)day,NVL(c.cnt,0)cnt
+FROM cycle c,product p,customer t
+WHERE c.pid(+)= p.pid
+AND t.cid(+) = c.cid 
+AND c.cid(+) = 1
+ORDER BY p.pid DESC;
+
 
 
 INNER JOIN :조인이 성공하는 데이터만 조회가 되는 조인방식(JOIN이랑 같다)
@@ -138,12 +145,12 @@ WHERE sal >(SELECT AVG(SAL)
                 FROM emp);
                 
 sub 2
-              
+전체직원의 급여가 평균보다 높은 급여를 받는 사원들ㅇ 조회      
 SELECT *
 FROM emp
 WHERE sal >(SELECT AVG(SAL)
-                FROM emp);  
- 실습 sub3
+                FROM emp); 
+ 실습 sub3 
   SMITH와 WARD사원이 속한 부서의 모든사원정보를 조회하는 쿼리를 작성하세요
   SELECT *
   FROM emp
@@ -183,12 +190,23 @@ pair wise 개념: 순서쌍 , 두가지 조건을 동시에 만족시키는 데�
 
 SELECT *
 FROM emp
-WHERE (mgr,deptno) IN (SELECT mgr, deptno
+WHERE mgr IN (SELECT mgr 
+                        FROM emp
+                        WHERE empno IN (7499,7782))
+AND deptno IN (SELECT deptno
                         FROM emp
                         WHERE empno IN (7499,7782));
+SELECT *
+FROM emp                   
+WHERE (mgr,deptno) IN (SELECT mgr,deptno 
+              FROM emp
+               WHERE empno IN (7499,7782));                  
                         
-                        사진
                         
+                        
+                        
+                        
+                
                         
 SCALAR SUBQUERY: SELECT 절에 기술된 서브쿼리
                         하나의컬럼
@@ -233,3 +251,4 @@ WHERE deptno IN (SELECT deptno
 SELECT dname
 FROM dept 
 WHERE deptno=deptno
+

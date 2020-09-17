@@ -223,7 +223,7 @@ emp 테이블의 사원중에 mgr가 7698이 아니고 7939가 아닌 직원
      
      SELECT *
      FROM emp
-     WHERE mgr IS NOT NULL
+     WHERE mgr IS NOT NULL  --널값 빼고출력
      ORDER BY job, empno DESC;
      
      ㅇㅅ
