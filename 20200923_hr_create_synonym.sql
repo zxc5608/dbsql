@@ -1,0 +1,9 @@
+YONGYONG.V_EMP;==>v_emp
+
+SELECT *
+FROM YONGYONG.V_EMP;
+
+CREATE SYNONYM v_emp FOR yongyong.v_emp;
+
+SELECT *
+FROM v_emp;
