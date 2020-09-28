@@ -1,6 +1,7 @@
 
 START WITH :계층쿼리의 시작 점(행) 여러개의행을 조회하는 조건이 들어갈 수도있다
             START WITH절에 의해 선택된 행이 여러개이면 순차적으로 진행한다
+            
 CONNECT BY : 행과 행을 연결할 조건을 기술
 
 PRIOR :현재읽은 행을 지칭
@@ -71,9 +72,9 @@ START WITH deptcd='dept0'
 CONNECT BY PRIOR deptcd=p_deptcd ;
 
 계층 쿼리 특수함수(오라클 사용자헤게는 중요한 함수)
-CONNECT_BY_ROOT(col):최상위 행의 컬럼 값 조회
-SYS_CONNECT_BY_PATH(col,구분자): 계층 순회 경로를 표현
-CONNECT_BY_ISLEAF :해당 행의 leaf node(자식이 없는 노드) 인지 여부를 반환
+* CONNECT_BY_ROOT(col):최상위 행의 컬럼 값 조회
+* SYS_CONNECT_BY_PATH(col,구분자): 계층 순회 경로를 표현
+* CONNECT_BY_ISLEAF :해당 행의 leaf node(자식이 없는 노드) 인지 여부를 반환
                     (1: leaf node, 0:no leaf node)
                     
 SELECT deptcd,LPAD(' ',(LEVEL-1)*3)||deptnm,
@@ -85,7 +86,7 @@ START WITH deptcd=  'dept0'
 CONNECT BY PRIOR deptcd=p_deptcd;
 
 --------------------------------
-CONNECT BY LEVEL 계층 쿼리: CROSSJOIN과 유사
+CONNECT BY LEVEL 계층 쿼리: CROSSJOIN과 유사  ---달력이랑 같이보기
 연결가능한 모든 행에 대해 계층으로연결
 
 SELECT dummy,LEVEL, LTRIM(SYS_CONNECT_BY_PATH(dummy,'-'),'-')schp
@@ -93,16 +94,24 @@ FROM dual
 CONNECT BY LEVEL <=10;
 ---------------------------------------
 
-﻿create table board_test (
- seq number,
- parent_seq number,
- title varchar2(100) );
- ==================================
 
-
-    
 SELECT *
 FROM board_test;
+실습6
+SELECT seq,LPAD(' ',(LEVEL-1)*3)||title title
+FROM board_test
+START WITH parent_seq IS NULL
+CONNECT BY PRIOR seq=parent_seq;
+
+SELECT seq,LPAD(' ',(LEVEL-1)*3)||title title
+FROM board_test
+START WITH parent_seq IS NULL
+CONNECT BY PRIOR seq = parent_seq
+ORDER BY seq DESC;
+
+
+
+
 
 실습 6-8
 SELECT seq,LPAD(' ',(LEVEL-1)*3)||title title
@@ -166,13 +175,6 @@ FROM emp;
 
 SELECT *
 FROM 
-(SELECT ename ,sal,deptno
-FROM emp
-ORDER BY deptno ,sal DESC);
-
-
-SELECT *
-FROM 
 (SELECT ename, sal, deptno, ROWNUM rn
     FROM
     (SELECT ename, sal, deptno
@@ -180,21 +182,20 @@ FROM
      ORDER BY deptno, sal DESC) ) a,
 
 (SELECT deptno, lv, ROWNUM rn
-FROM 
+  FROM 
     (SELECT a.deptno, b.lv
     FROM 
-    (SELECT deptno, COUNT(*) cnt
-     FROM emp
-     GROUP BY deptno) a, 
-    (SELECT LEVEL lv
-     FROM dual
-     CONNECT BY LEVEL <= (SELECT COUNT(*) FROM emp) ) b
+        (SELECT deptno, COUNT(*) cnt
+        FROM emp
+        GROUP BY deptno) a, 
+            (SELECT LEVEL lv
+             FROM dual
+             CONNECT BY LEVEL <= (SELECT COUNT(*) FROM emp) ) b
     WHERE a.cnt >= b.lv
     ORDER BY a.deptno, b.lv )) b
 WHERE a.rn = b.rn;
 
-SELECT ename,sal ,deptno
-FROM emp
+
 
 
 분석함수/ 윈도우함수 문법
@@ -206,12 +207,13 @@ WINDOWING : 파티션 내에서 범위설정
 
 부서별 급여순위구하기
 순위 관련 분석함수 =동일 값에대한 순위처리에 따라 3가지 함수를제공
-RANK: 동일 값에대해서 동일순위부여
+* RANK: 동일 값에대해서 동일순위부여
       후순위:1등이 2명이면 그 다음 순위가 3위(1,1,3)
-DENSE_RANK : 동일값에 대해 동일순위부여
+* DENSE_RANK : 동일값에 대해 동일순위부여
             후순위: 1등이 2명이면 그 다음순위가 2위 (1,1,2)
             
-ROW_NUMBER: 동일값이라도 다른순위를 부여 (1.2.3)
+* ROW_NUMBER: 동일값이라도 다른순위를 부여 (1.2.3)
+
 실습
 SELECT ename, sal,deptno,
         RANK() OVER (PARTITION BY deptno ORDER BY sal DESC)sal_rank,

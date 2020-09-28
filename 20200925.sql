@@ -18,7 +18,7 @@ GROUP BY CUBE (job,deptno)
     job, deptno
     0      0 ==> GROUP BY job, deptno
     0      x ==> GROUP BY job
-    x      0 ==> GROUP BY deptno(ROLLUP에는 업는 서브그룹)
+    x      0 ==> GROUP BY deptno(ROLLUP에는 없는 서브그룹)
     x      x ==> GROUP BY 전체
 
 GROUP BY ROLLUP(job,deptno)==>3개
@@ -71,7 +71,7 @@ UPDATE emp_test SET dname =
 FROM dept 
 WHERE deptno=emp_test.deptno)
 commit;
-실습 2
+실습 
 DROP TABLE dept_test;
 --
 CREATE TABLE dept_test AS
@@ -102,8 +102,6 @@ FROM dept_test
 부서에 속한 직원이없는 부서를 삭제하는 쿼리를 작성하세요
 ALTER TABLE dept_test DROP COLUMN empcnt;
 
-
-
 DELETE dept_test
 WHERE 0 NOT IN(SELECT deptno
                 FROM emp
@@ -120,9 +118,26 @@ SELECT *
 FROM dept_test
 
 실습3번은 과제 47p
+DROP TABLE emp_test
 
+CREATE TABLE emp_test AS
+SELECT *
+FROM emp;
+----
+UPDATE emp_test SET sal=sal+200
+WHERE sal <=(SELECT AVG(AVG(sal))sal
+            FROM emp
+            WHERE emp.deptno=emp_test.deptno
+            GROUP BY deptno);
+                        
+SELECT AVG(AVG(sal))sal
+FROM emp_test
+GROUP BY deptno;
+             
+SELECT *
+FROM emp_test;
 
-
+rollback;
 ------------------
 달력만들기 
 :행을 열로 만들기-레포트 쿼리에서 자주 사용하는 형태
@@ -187,6 +202,10 @@ GROUP BY TO_CHAR(dt,'mm'));
 
 
 ---------------계층형쿼리
+
+SELECT *
+FROM dept_h;
+
 
 SELECT deptcd,LPAD(' ',(LEVEL-1)*2)||deptnm,LEVEL
 FROM dept_h
