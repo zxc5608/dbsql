@@ -126,7 +126,7 @@ pl/sql : DBMS_OUTPUT.PUT_LINE(...);
 ORCLE :결과 출력을 위해 출력 기능을 활성화햐야함
 매번 실행할 필요는 없고 ,오라클 접속후 한번만 실행하면됨
 (내일 수업시 다시실행_
-SET serveroutput ON;
+SET serveroutput ON;--얘
 DECLARE
     v_deptno NUMBER(2);
     v_dname VARCHAR2(14);
@@ -215,7 +215,7 @@ BEGIN
 END;
 /
 EXEC printemp(7839)
-
+실습 pro_2
 CREATE OR REPLACE PROCEDURE registdept_test(p_deptno IN dept_test.deptno%TYPE,
                                             p_dname IN dept_test.dname%TYPE,
                                             p_loc IN dept_test.loc%TYPE)IS
@@ -232,3 +232,15 @@ SELECT *
 FROM dept_test
 
 과제 pro3번
+
+CREATE OR REPLACE PROCEDURE updatedept_test(p_deptno IN dept_test.deptno%TYPE,
+                                            p_dname IN dept_test.dname%TYPE,
+                                            p_loc IN dept_test.loc%TYPE)IS
+BEGIN
+UPDATE dept_test SET dname = p_dname, loc = p_loc
+WHERE deptno=p_deptno;
+
+END;
+/
+
+                                        

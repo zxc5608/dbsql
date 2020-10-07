@@ -250,5 +250,11 @@ WHERE deptno IN (SELECT deptno
 
 SELECT dname
 FROM dept 
-WHERE deptno=deptno
+WHERE deptno=deptno;
 
+SELECT *
+FROM emp
+WHERE deptno IN
+        (SELECT deptno
+        FROM emp
+        WHERE ename IN('SMITH','WARD'));
